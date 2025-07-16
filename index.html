@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Surpresa Romântica</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #ffdde1, #ee9ca7);
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      flex-direction: column;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 0.5em;
+    }
+    .surprise-btn {
+      background: #fff;
+      border: none;
+      padding: 1em 2em;
+      font-size: 1.2em;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      transition: background 0.3s;
+    }
+    .surprise-btn:hover {
+      background: #fce4ec;
+    }
+    .content {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeIn 2s ease-in-out;
+    }
+    .photos {
+      display: flex;
+      gap: 10px;
+      margin: 1em 0;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .photos img {
+      display: block;
+      width: 150px;
+      height: 150px;
+      object-fit: cover; /* use cover para ficar uniforme */
+      border-radius: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      background: transparent;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .photos img:hover {
+      transform: scale(1.05);
+    }
+    .countdown {
+      font-size: 1.2em;
+      margin-top: 1em;
+      font-weight: bold;
+    }
+    audio {
+      margin-top: 1em;
+      outline: none;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    /* Modal estilo Discord */
+    #imgModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; 
+      width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.85);
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+    }
+    #imgModal img {
+      max-width: 90vw;
+      max-height: 90vh;
+      border-radius: 12px;
+      box-shadow: 0 0 30px black;
+    }
+    @keyframes fall {
+      to {
+        transform: translateY(110vh);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Uma surpresa para a minha rainha ❤️</h1>
+  <button class="surprise-btn" onclick="showSurprise()">Abrir Surpresa</button>
+  
+  <div class="content" id="content">
+    <p>Você é a minha joia mais preciosa, meu amor. 💗<br>
+    Eu te amo com toda a minha alma, princesa. 💍</p>
+
+    <p>A gente 💗<br>
+    Clique nas fotos!</p>
+
+    <div class="photos">
+      <img src="https://media.discordapp.net/attachments/929525135105462362/1394799337548288141/Imagem_do_WhatsApp_de_2025-07-15_as_18.51.10_2ee59a4f.jpg?ex=68781f9c&is=6876ce1c&hm=197f5a4c61274b7a7ee0dd07cd3e777522850257eac360dce4b0cf8262508e33&=&format=webp&width=587&height=597" alt="Foto 1" class="modal-img" />
+
+      <img src="https://cdn.discordapp.com/attachments/929525135105462362/1394578397623095367/image.png?ex=6877fa98&is=6876a918&hm=0a7155264f2138064814f29e4a654e8e4d12c31ebfd6f168a4fe5bb3b76fee75&" alt="Foto 2" class="modal-img" />
+
+      <img src="https://media.discordapp.net/attachments/929525135105462362/1394578395286737006/Imagem_do_WhatsApp_de_2025-07-15_as_04.14.59_f7dcbd6a.jpg?ex=6877fa97&is=6876a917&hm=bd14066421585c2e7e0e6c12072c0f2d8a6fad36ee1e65a991092bd35ef5c4fe&=&format=webp&quality=lossless&width=554&height=816" alt="Foto 3" class="modal-img" />
+
+      <img src="https://media.discordapp.net/attachments/929525135105462362/1394571189212414002/image.png?ex=6877f3e1&is=6876a261&hm=ea9ed9481b1738b06e9e3d376faf37e9020d255c887ad043c085107d6d93f66b&=&format=webp&quality=lossless&width=554&height=816" alt="Foto 4" class="modal-img" />
+    </div>
+
+    <div id="countdown" class="countdown"></div>
+
+    <audio controls>
+      <source src="https://dl.sndup.net/rs53t/Alian%C3%A7as.mp3" type="audio/mp3">
+      Seu navegador não suporta o player de áudio.
+    </audio>
+  </div>
+
+  <!-- Modal (coloque no final do body) -->
+  <div id="imgModal">
+    <img id="imgModalContent" src="" alt="" />
+  </div>
+
+  <script>
+    function showSurprise() {
+      document.querySelector('.surprise-btn').style.display = 'none';
+      document.getElementById('content').style.display = 'flex';
+      startCountdown();
+      launchConfetti();
+    }
+
+    function startCountdown() {
+      const targetDate = new Date();
+      targetDate.setSeconds(targetDate.getSeconds() + 2); // soma 2 segundos
+
+      const countdown = document.getElementById('countdown');
+
+      const interval = setInterval(() => {
+        const now = new Date();
+        const diff = targetDate - now;
+
+        if (diff <= 0) {
+          clearInterval(interval);
+          countdown.innerText = 'A contagem terminou 🎉';
+          return;
+        }
+
+        const minutes = Math.floor(diff / 1000 / 60);
+        const seconds = Math.floor((diff / 1000) % 60);
+        countdown.innerText = `Contagem regressiva: ${minutes}m ${seconds}s`;
+      }, 1000);
+    }
+
+    function launchConfetti() {
+      const emojiRain = setInterval(() => {
+        const emoji = document.createElement('div');
+        emoji.innerText = '💖';
+        emoji.style.position = 'fixed';
+        emoji.style.left = Math.random() * 100 + 'vw';
+        emoji.style.top = '-2em';
+        emoji.style.fontSize = '2em';
+        emoji.style.animation = 'fall 3s linear forwards';
+        document.body.appendChild(emoji);
+        setTimeout(() => emoji.remove(), 3000);
+      }, 300);
+      setTimeout(() => clearInterval(emojiRain), 5000);
+    }
+
+    // Modal das imagens
+    const imgs = document.querySelectorAll('.modal-img');
+    const modal = document.getElementById('imgModal');
+    const modalImg = document.getElementById('imgModalContent');
+
+    imgs.forEach(img => {
+      img.addEventListener('click', () => {
+        modal.style.display = 'flex';
+        modalImg.src = img.src;
+        modalImg.alt = img.alt || '';
+      });
+    });
+
+    modal.addEventListener('click', e => {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+        modalImg.src = '';
+        modalImg.alt = '';
+      }
+    });
+  </script>
+</body>
+</html>
